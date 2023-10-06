@@ -3,7 +3,7 @@ public class Token {
     * Atributos de la clase token
     * tipo: indica el tipo de token
     * lexema: cadena de caracteres o símbolos que componen a los elementos como palabras reservadas, identificadores, etc
-    * literal:
+    * literal: Guarda el valor numerico si es que el lexema es numerico
     */
     final TipoToken tipo;
 

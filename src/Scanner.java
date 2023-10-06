@@ -98,7 +98,7 @@ public class Scanner {
 
                     } else {
 
-                        Token t = new Token (TipoToken.NUMBER, lexema);
+                        Token t = new Token (TipoToken.NUMBER, lexema, Integer.valueOf(lexema));
                         tokens.add(t);
 
                         estado = 0;
