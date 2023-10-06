@@ -39,7 +39,7 @@ public class Main {
             System.out.print(">");
             String linea = leer.readLine();
             if(linea == null) break; // Presionar Ctrl + D
-
+            ejecutar(linea);
         }
     }
 
@@ -61,7 +61,7 @@ public class Main {
             }
             //eliminar Salto de linea
             codigo = codigo.substring(0, codigo.length() -1);
-
+            ejecutar(codigo);
 
         }catch(IOException e){
             System.out.println("Error leyendo archivo: " + e.getMessage());
@@ -78,7 +78,7 @@ public class Main {
             List<Token> tokens = scanner.scan();
 
             for(Token token : tokens){
-                System.out.println(token);
+                System.out.println(token.toString());
             }
         }
         catch (Exception ex){

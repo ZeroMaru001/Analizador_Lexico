@@ -32,11 +32,11 @@ public class Token {
     //Metodos de la clase token
 
     /**
-     * Metodo para guardar los tokens en un string
+     * Metodo para transformar los tokens a un string
      * @return una cadena que indica la informacion de un token
      */
 
     public String toString() {
-        return "<" + tipo + " " + lexema + " " + literal + ">";
+        return "<" + tipo + ", " + lexema + ", " + literal + ">";
     }
 }
