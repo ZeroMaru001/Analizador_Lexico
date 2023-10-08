@@ -132,6 +132,8 @@ public class Scanner {
                         lexema = "";
                     } else if ( c == '\n') {
                         numeroLinea++;
+                    } else if ( !(c == ' ' || c ==  '\t' )) {
+                        Main.error(numeroLinea, "Simbolo no valido");
                     }
                     break;
                 case 1:
@@ -312,6 +314,9 @@ public class Scanner {
                     }
                     break;
                 case 27:
+                    if (c == '\n'){
+                        numeroLinea++;
+                    }
                     if(c == '*'){
                         //Si se detecta un asterisco, se avanza al estado 28
                         estado = 28;
@@ -339,6 +344,7 @@ public class Scanner {
                         //Si se detecta un salto de línea, se se regresa al estado 0 y se reinicia el lexema
                         estado = 0;
                         lexema = "";
+                        numeroLinea++;
                     } else{
                         //Si se detecta cualquier otro caracter, se mantiene en el estado 30
                         estado = 30;

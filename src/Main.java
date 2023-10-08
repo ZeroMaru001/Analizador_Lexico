@@ -72,7 +72,7 @@ public class Main {
      * Metodo para analizar el lexico de un codigo
      * @param codigo a analizar de un archivo o dado por el usuario
      */
-    private static void ejecutar(String codigo) {
+    private static void ejecutar(String codigo) throws  IOException{
         try{
             Scanner scanner = new Scanner(codigo);
             List<Token> tokens = scanner.scan();
@@ -84,5 +84,16 @@ public class Main {
         catch (Exception ex){
             ex.printStackTrace();
         }
+    }
+
+    static void error(int linea, String mensaje){
+        reportar(linea, mensaje);
+    }
+
+    private static void reportar(int linea, String mensaje){
+        System.err.println(
+                "[linea " + linea + "] Error : " + mensaje
+        );
+        existenErrores = true;
     }
 }
