@@ -63,7 +63,12 @@ public class Scanner {
                     } else if (Character.isDigit(c)) {
                         estado = 15;
                         lexema += c;
+                    } else if ( c == '/') {
+                        estado = 26;
+                        lexema += c;
                     }
+                    break;
+                case 1:
                     break;
                 case 13:
                     if (Character.isLetterOrDigit(c)){
@@ -105,6 +110,60 @@ public class Scanner {
                         lexema = "";
                         i--;
                     }
+                case 26:
+                    // Si se detecta un asterisco, se avanza al estado 27
+                    if(c == '*'){
+                        estado = 27;
+
+                    }
+                    // Si se detecta otra diagonal, se avanza al estado 30
+                    else if(c == '/'){
+                        estado = 30;
+                    }
+                    // La diagonal fue única e indica división
+                    //Se genera token para '/'
+                    //Se regresa al estado 0 del autómata y se reinicia el lexema
+                    else{
+                        Token t = new Token (TipoToken.SLASH, lexema, null);
+                        tokens.add(t);
+                        i--;
+                        estado = 0;
+                        lexema = "";
+                    }
+                    break;
+                case 27:
+                    if(c == '*'){
+                        //Si se detecta un asterisco, se avanza al estado 28
+                        estado = 28;
+                    } else{
+                        estado = 27;
+                    }
+                    break;
+                case 28:
+                    if(c == '/'){
+                        //Si se detecta una diagonal, indica que el comentario multilínea llegó a su fin
+                        //Se regresa al estado 0 y se reinicia el lexema
+                        estado = 0;
+                        lexema = "";
+                    }
+                    else if(c == '*'){
+                        //Si se detecta un asterisco se mantiene en el mismo estado
+                        estado = 28;
+                    } else{
+                        //Si se detecta cualquier otro caracter, se regresa al estado 27
+                        estado = 27;
+                    }
+                    break;
+                case 30:
+                    if(c == '\n'){
+                        //Si se detecta un salto de línea, se se regresa al estado 0 y se reinicia el lexema
+                        estado = 0;
+                        lexema = "";
+                    } else{
+                        //Si se detecta cualquier otro caracter, se mantiene en el estado 30
+                        estado = 30;
+                    }
+                    break;
             }
         }
         return tokens;
