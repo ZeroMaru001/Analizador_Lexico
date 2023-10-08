@@ -59,13 +59,7 @@ public class Scanner {
 
             switch (estado){
                 case 0:
-                    if (Character.isLetter(c)) {
-                        estado = 13;
-                        lexema += c;
-                    } else if (Character.isDigit(c)) {
-                        estado = 15;
-                        lexema += c;
-                    } else if ( c == '>') {
+                    if ( c == '>') {
                         estado = 1;
                         lexema += c;
                     } else if ( c == '<') {
@@ -76,6 +70,18 @@ public class Scanner {
                         lexema += c;
                     } else if ( c == '!') {
                         estado = 10;
+                        lexema += c;
+                    } else if (Character.isLetter(c)) {
+                        estado = 13;
+                        lexema += c;
+                    } else if (Character.isDigit(c)) {
+                        estado = 15;
+                        lexema += c;
+                    } else if (c == '"'){
+                        estado = 24;
+                        lexema += c;
+                    } else if ( c == '/') {
+                        estado = 26;
                         lexema += c;
                     } else if ( c == '+') {
                         lexema += c;
@@ -92,9 +98,6 @@ public class Scanner {
                         t = new Token(TipoToken.STAR,lexema);
                         tokens.add(t);
                         lexema = "";
-                    } else if ( c == '/') {
-                        estado = 26;
-                        lexema += c;
                     } else if ( c == '{') {
                         lexema += c;
                         t = new Token(TipoToken.LEFT_BRACE,lexema);
@@ -134,9 +137,6 @@ public class Scanner {
                         numeroLinea++;
                     } else if ( !(c == ' ' || c ==  '\t' )) {
                         Main.error(numeroLinea, "Simbolo no valido");
-                    } else if (c == '"'){
-                        estado = 24;
-                        lexema += c;
                     }
                     break;
                 case 1:
@@ -244,6 +244,7 @@ public class Scanner {
                         lexema += c;
                     } else{
                         //error
+                        Main.error(numeroLinea, "Numero decimal solo posee punto");
                     }
                     break;
                 case 17:
@@ -273,6 +274,7 @@ public class Scanner {
                         lexema += c;
                     } else{
                         //error
+                        Main.error(numeroLinea, "Exponentesin numero");
                     }
                     break;
                 case 19:
@@ -281,6 +283,7 @@ public class Scanner {
                         lexema += c;
                     }else {
                         //Error
+                        Main.error(numeroLinea, "Exponente con signo sin numero");
                     }
                     break;
                 case 20:
@@ -299,24 +302,22 @@ public class Scanner {
                     break;
                 case 24:
                     if (c == '"') { 
-                        // La existencia de una ingresar nuevamente comillas dobles cierra la cadena, pasa a estado 25.
-                        estado = 25;
+                        // La existencia de una ingresar nuevamente comillas dobles cierra la cadena, pasa a estado 0.
+                        estado = 0;
                         lexema += c;
-                        Token t = new Token(TipoToken.STRING, lexema);
+                        t = new Token(TipoToken.STRING, lexema, lexema.substring(1, lexema.length() - 1));
                         tokens.add(t);
                         lexema = "";
                     } else if (c == '\n') { 
                         // Un salto de línea determina un error.
-                        existenErrores = true;
+                        numeroLinea++;
+                        Main.error(numeroLinea, "Error no se cerro '\"' ");
+                        estado = 0;
+                        lexema = "";
                     } else {
                         lexema += c;
                     }
-                break;
-                case 25:
-                        // Al ingresar al estado 25, regresa al estado 0 y reinicia el lexema.
-                        estado = 0;
-                        lexema = "";
-                break;
+                    break;
                 case 26:
                     if(c == '*'){
                         // Si se detecta un asterisco, se avanza al estado 27
@@ -374,6 +375,11 @@ public class Scanner {
                     }
                     break;
             }
+        }
+        if (estado == 27 || estado == 28){
+            Main.error(numeroLinea, "Comentario multilinea sin cerrar");
+        } else if (estado == 24){
+            Main.error(numeroLinea, "Error no se cerro '\"' ");
         }
         return tokens;
     }
