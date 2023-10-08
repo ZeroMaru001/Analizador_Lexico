@@ -35,11 +35,12 @@ public class Main {
         InputStreamReader entrada = new InputStreamReader(System.in);
         BufferedReader leer = new BufferedReader(entrada);
 
-        while(!existenErrores){
+        while(true){
             System.out.print(">");
             String linea = leer.readLine();
             if(linea == null) break; // Presionar Ctrl + D
             ejecutar(linea);
+            existenErrores = true;
         }
     }
 
