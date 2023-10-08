@@ -142,6 +142,7 @@ public class Scanner {
                     }else{
                         t = new Token(TipoToken.GREATER, lexema);
                         tokens.add(t);
+                        i--;
                     }
                     estado = 0;
                     lexema = "";
@@ -154,6 +155,7 @@ public class Scanner {
                     }else{
                         t = new Token(TipoToken.LESS, lexema);
                         tokens.add(t);
+                        i--;
                     }
                     estado = 0;
                     lexema = "";
@@ -166,6 +168,7 @@ public class Scanner {
                     }else{
                         t = new Token(TipoToken.EQUAL, lexema);
                         tokens.add(t);
+                        i--;
                     }
                     estado = 0;
                     lexema = "";
@@ -178,6 +181,7 @@ public class Scanner {
                     }else{
                         t = new Token(TipoToken.BANG, lexema);
                         tokens.add(t);
+                        i--;
                     }
                     estado = 0;
                     lexema = "";
