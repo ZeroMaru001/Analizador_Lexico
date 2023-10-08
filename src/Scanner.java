@@ -134,6 +134,9 @@ public class Scanner {
                         numeroLinea++;
                     } else if ( !(c == ' ' || c ==  '\t' )) {
                         Main.error(numeroLinea, "Simbolo no valido");
+                    } else if (c == '"'){
+                        estado = 24;
+                        lexema += c;
                     }
                     break;
                 case 1:
@@ -294,6 +297,26 @@ public class Scanner {
                         i--;
                     }
                     break;
+                case 24:
+                    if (c == '"') { 
+                        // La existencia de una ingresar nuevamente comillas dobles cierra la cadena, pasa a estado 25.
+                        estado = 25;
+                        lexema += c;
+                        Token t = new Token(TipoToken.STRING, lexema);
+                        tokens.add(t);
+                        lexema = "";
+                    } else if (c == '\n') { 
+                        // Un salto de línea determina un error.
+                        existenErrores = true;
+                    } else {
+                        lexema += c;
+                    }
+                break;
+                case 25:
+                        // Al ingresar al estado 25, regresa al estado 0 y reinicia el lexema.
+                        estado = 0;
+                        lexema = "";
+                break;
                 case 26:
                     if(c == '*'){
                         // Si se detecta un asterisco, se avanza al estado 27
