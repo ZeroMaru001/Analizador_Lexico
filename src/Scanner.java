@@ -381,6 +381,8 @@ public class Scanner {
         } else if (estado == 24){
             Main.error(numeroLinea, "Error no se cerro '\"' ");
         }
+        Token t1 = new Token(TipoToken.EOF,"");
+        tokens.add(t1);
         return tokens;
     }
 }
