@@ -81,6 +81,9 @@ public class Main {
             for(Token token : tokens){
                 System.out.println(token.toString());
             }
+
+            Parser parser = new ASDR(tokens);
+            parser.parse();
         }
         catch (Exception ex){
             ex.printStackTrace();
