@@ -1,3 +1,4 @@
+import java.beans.Expression;
 import java.util.List;
 public class ASDR implements Parser {
     private int i = 0;
@@ -342,6 +343,240 @@ public class ASDR implements Parser {
 
     /**EXPRESIONES*/
 
+        public void expression(){
+            assignment();
+        }
+        public void assignment(){
+            logic_or();
+            if(this.preanalisis.getTipo() == TipoToken.EQUAL){
+                assignment_opc();
+            }
+        }
+        public void assignment_opc(){
+            if(this.preanalisis.getTipo() == TipoToken.EQUAL){
+                match(TipoToken.EQUAL);
+                expression();
+            }
+        }
+        public void logic_or(){
+            logic_and();
+            if(this.preanalisis.getTipo() == TipoToken.OR){
+                logic_or_2();
+            }
+        }
+        public void logic_or_2(){
+            if(this.preanalisis.getTipo() == TipoToken.OR){
+                match(TipoToken.OR);
+                logic_and();
+                logic_or_2();
+            }
+        }
+        public void logic_and(){
+            equality();
+            if(this.preanalisis.getTipo() == TipoToken.AND){
+                logic_and_2();
+            }
+        }
+        public void logic_and_2() {
+            switch (this.preanalisis.getTipo()) {
+                case BANG_EQUAL:
+                    match(TipoToken.BANG_EQUAL);
+                    comparison();
+                    logic_and_2();
+                    break;
+
+                case EQUAL_EQUAL:
+                    match(TipoToken.EQUAL_EQUAL);
+                    comparison();
+                    logic_and_2();
+                    break;
+
+                default:
+                    this.hayErrores = true;
+            }
+        }
+        public void equality(){
+            comparison();
+            if (this.preanalisis.getTipo() == TipoToken.BANG_EQUAL || this.preanalisis.getTipo() == TipoToken.EQUAL_EQUAL){
+                equality_2();
+            }
+        }
+        public void equality_2(){
+            switch (this.preanalisis.getTipo()){
+                case BANG_EQUAL:
+                    match(TipoToken.BANG_EQUAL);
+                    comparison();
+                    equality_2();
+                    break;
+
+                case EQUAL_EQUAL:
+                    match(TipoToken.EQUAL_EQUAL);
+                    comparison();
+                    equality_2();
+                    break;
+
+                default:
+                    this.hayErrores = true;
+            }
+        }
+        public void comparison(){
+            term();
+            if (this.preanalisis.getTipo() == TipoToken.GREATER || this.preanalisis.getTipo() == TipoToken.GREATER_EQUAL || this.preanalisis.getTipo() == TipoToken.LESS || this.preanalisis.getTipo() == TipoToken.LESS_EQUAL){
+                comparison_2();
+            }
+         }
+        public void comparison_2(){
+            switch (this.preanalisis.getTipo()){
+                case GREATER:
+                    match(TipoToken.GREATER);
+                    term();
+                    comparison_2();
+                    break;
+
+                case GREATER_EQUAL:
+                    match(TipoToken.GREATER_EQUAL);
+                    term();
+                    comparison_2();
+                    break;
+
+                case LESS:
+                    match(TipoToken.LESS);
+                    term();
+                    comparison_2();
+                    break;
+
+                case LESS_EQUAL:
+                    match(TipoToken.LESS_EQUAL);
+                    term();
+                    comparison_2();
+                    break;
+
+                default:
+                    this.hayErrores = true;
+            }
+        }
+        public void term(){
+            factor();
+            if (this.preanalisis.getTipo() == TipoToken.MINUS || this.preanalisis.getTipo() == TipoToken.PLUS)
+                term_2();
+            }
+
+        public void term_2(){
+            switch (this.preanalisis.getTipo()){
+                case MINUS:
+                    match(TipoToken.MINUS);
+                    factor();
+                    term_2();
+                    break;
+
+                case PLUS:
+                    match(TipoToken.PLUS);
+                    factor();
+                    term_2();
+                    break;
+
+                default:
+                    this.hayErrores = true;
+            }
+        }
+        public void factor() {
+            unary();
+            if (this.preanalisis.getTipo() == TipoToken.STAR || this.preanalisis.getTipo() == TipoToken.SLASH) {
+                factor_2();
+            }
+        }
+        public void factor_2(){
+            switch(this.preanalisis.getTipo()){
+                case SLASH:
+                    match(TipoToken.SLASH);
+                    unary();
+                    factor_2();
+                    break;
+
+                case STAR:
+                    match(TipoToken.STAR);
+                    unary();
+                    factor_2();
+                    break;
+
+                default:
+                    this.hayErrores = true;
+            }
+        }
+        public void unary(){
+            switch(this.preanalisis.getTipo()){
+                case BANG:
+                    match(TipoToken.BANG);
+                    unary();
+                    break;
+
+                case MINUS:
+                    match(TipoToken.MINUS);
+                    unary();
+                    break;
+
+                case TRUE,FALSE,NULL,NUMBER,STRING,IDENTIFIER,LEFT_PAREN:
+                    call();
+                    break;
+
+                default:
+                    this.hayErrores = true;
+            }
+        }
+        public void call(){
+            primary();
+            if (preanalisis.tipo == TipoToken.LEFT_PAREN)
+                call_2();
+        }
+        public void call_2(){
+            if (preanalisis.tipo == TipoToken.LEFT_PAREN){
+                match(TipoToken.LEFT_PAREN);
+                match(TipoToken.RIGHT_PAREN);
+                call_2();
+            }
+        }
+        public void primary() {
+            switch (this.preanalisis.getTipo()) {
+                case TRUE:
+                    match(TipoToken.TRUE);
+                    break;
+
+                case FALSE:
+                    match(TipoToken.FALSE);
+                    break;
+
+                case NULL:
+                    match(TipoToken.NULL);
+                    break;
+
+                case NUMBER:
+                    match(TipoToken.NUMBER);
+                    Token number = anterior();
+                    break;
+
+                case STRING:
+                    match(TipoToken.STRING);
+                    Token string = anterior();
+                    break;
+
+                case IDENTIFIER:
+                    match(TipoToken.IDENTIFIER);
+                    Token identifier = anterior();
+                    break;
+
+                case LEFT_PAREN:
+                    match(TipoToken.LEFT_PAREN);
+                    expression();
+                    match(TipoToken.RIGHT_PAREN);
+                    expression();
+                    break;
+
+                default:
+                    this.hayErrores = true;
+
+            }
+        }
+
     //Comparar tipo de token
     private void match(TipoToken tt){
         if(preanalisis.tipo == tt){
@@ -355,5 +590,8 @@ public class ASDR implements Parser {
             System.out.println("Se esperaba:" + tt);
         }
 
+    }
+    private Token anterior(){
+        return this.tokens.get(i-1);
     }
 }

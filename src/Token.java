@@ -39,4 +39,12 @@ public class Token {
     public String toString() {
         return "<" + tipo + ", " + lexema + ", " + literal + ">";
     }
+
+    public TipoToken getTipo(){
+        return this.tipo;
+    }
+
+    public Object getLiteral(){
+        return literal;
+    }
 }
