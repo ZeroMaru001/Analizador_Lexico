@@ -77,7 +77,7 @@ public class ASDR implements Parser {
 
         if(TipoToken.FUN == preanalisis.tipo){
             match(TipoToken.FUN);
-            //FUNCTION(); para alberto
+            FUNCTION();
         } else {
             hayErrores = true;
             System.out.println("Se esperaba un fun");
@@ -107,7 +107,7 @@ public class ASDR implements Parser {
 
         if (TipoToken.EQUAL == preanalisis.tipo){
             match(TipoToken.EQUAL);
-            //EXPRESSION(); para el gus
+            expression();
         }
 
     }
@@ -153,7 +153,7 @@ public class ASDR implements Parser {
     private void EXPR_STMT(){
         if(hayErrores)
             return;
-       // EXPRESION();  para el gus
+            expression();
         match(TipoToken.SEMICOLON);
     }
 
@@ -206,7 +206,7 @@ public class ASDR implements Parser {
             match(TipoToken.SEMICOLON);
         } else {
             //->EXPRESSION;
-            //EXPRESSION(); para el gus
+            expression();
             match(TipoToken.SEMICOLON);
         }
     }
@@ -226,7 +226,7 @@ public class ASDR implements Parser {
                 TipoToken.STRING == preanalisis.tipo ||
                 TipoToken.IDENTIFIER == preanalisis.tipo ||
                 TipoToken.LEFT_PAREN == preanalisis.tipo){
-            //EXPRESSION();para  el gus
+            expression();
         }
 
     }
@@ -239,7 +239,7 @@ public class ASDR implements Parser {
         if (TipoToken.IF == preanalisis.tipo){
             match(TipoToken.IF);
             match(TipoToken.LEFT_PAREN);
-            //EXPRESSION(); para el gus
+            expression();
             match(TipoToken.RIGHT_PAREN);
             STATEMENT();
             ELSE_STATEMENT();
@@ -268,7 +268,7 @@ public class ASDR implements Parser {
 
         if (TipoToken.PRINT == preanalisis.tipo){
             match(TipoToken.PRINT);
-            //EXPRESSION(); para el gus
+            expression();
             match(TipoToken.SEMICOLON);
         }else {
             hayErrores = true;
@@ -305,7 +305,7 @@ public class ASDR implements Parser {
                 TipoToken.STRING == preanalisis.tipo ||
                 TipoToken.IDENTIFIER == preanalisis.tipo ||
                 TipoToken.LEFT_PAREN == preanalisis.tipo){
-            //EXPRESSION();para  el gus
+            expression();
         }
     }
 
@@ -317,7 +317,7 @@ public class ASDR implements Parser {
         if (TipoToken.WHILE == preanalisis.tipo){
             match(TipoToken.WHILE);
             match(TipoToken.LEFT_PAREN);
-            //EXPRESSION(); para el gus
+            expression();
             match(TipoToken.RIGHT_PAREN);
             STATEMENT();
         }else {
@@ -327,15 +327,15 @@ public class ASDR implements Parser {
     }
 
     //BLOCK -> { DECLARATION }
-    private void BLOCK(){
-        if(hayErrores)
+    private void BLOCK() {
+        if (hayErrores)
             return;
 
-        if (TipoToken.LEFT_BRACE == preanalisis.tipo){
+        if (TipoToken.LEFT_BRACE == preanalisis.tipo) {
             match(TipoToken.LEFT_BRACE);
             DECLARATION();
             match(TipoToken.RIGHT_BRACE);
-        }else {
+        } else {
             hayErrores = true;
             System.out.println("Se esperaba un {");
         }
@@ -531,6 +531,7 @@ public class ASDR implements Parser {
         public void call_2(){
             if (preanalisis.tipo == TipoToken.LEFT_PAREN){
                 match(TipoToken.LEFT_PAREN);
+                ARGUMENTS_OPC();
                 match(TipoToken.RIGHT_PAREN);
                 call_2();
             }
@@ -576,6 +577,103 @@ public class ASDR implements Parser {
 
             }
         }
+
+    // FUNCTION -> id ( PARAMETERS_OPC ) BLOCK
+    private void FUNCTION() {
+        if (hayErrores) return;
+
+        // FUNCTION -> id ( PARAMETERS_OPC ) BLOCK
+        if (TipoToken.IDENTIFIER == preanalisis.tipo) {
+            match(TipoToken.IDENTIFIER);
+            match(TipoToken.LEFT_PAREN);
+            PARAMETERS_OPC();
+            match(TipoToken.RIGHT_PAREN);
+            BLOCK();
+        } else {
+            hayErrores = true;
+            System.out.println("Se esperaba id");
+        }
+    }
+
+    // FUNCTIONS -> FUN_DECL FUNCTIONS | Ɛ
+    private void FUNCTIONS() {
+        if (hayErrores)
+            return;
+
+        if (TipoToken.FUN == preanalisis.tipo) {
+            FUN_DECL();
+            FUNCTIONS();
+        }
+    }
+
+    // PARAMETERS_OPC -> PARAMETERS | Ɛ
+    private void PARAMETERS_OPC() {
+        if (hayErrores)
+            return;
+
+        if (TipoToken.IDENTIFIER  == preanalisis.tipo) {
+            PARAMETERS();
+        }
+    }
+
+    // PARAMETERS -> id PARAMETERS_2
+    private void PARAMETERS() {
+        if (hayErrores) return;
+
+        // PARAMETERS -> id PARAMETERS_2
+        if (TipoToken.IDENTIFIER  == preanalisis.tipo) {
+            match(TipoToken.IDENTIFIER);
+            PARAMETERS_2();
+        } else {
+            hayErrores = true;
+            System.out.println("Se esperaba id");
+        }
+    }
+
+    // PARAMETERS_2 -> , id PARAMETERS_2 | Ɛ
+    private void PARAMETERS_2() {
+        if (hayErrores)
+            return;
+
+        while (TipoToken.COMMA == preanalisis.tipo) {
+            match(TipoToken.COMMA);
+            match(TipoToken.IDENTIFIER);
+            PARAMETERS_2();
+        }
+    }
+
+    // ARGUMENTS_OPC -> EXPRESSION ARGUMENTS | Ɛ
+    private void ARGUMENTS_OPC() {
+        if (hayErrores)
+            return;
+
+        if (TipoToken.BANG == preanalisis.tipo || TipoToken.MINUS == preanalisis.tipo ||
+            TipoToken.TRUE == preanalisis.tipo || TipoToken.FALSE == preanalisis.tipo ||
+            TipoToken.NULL == preanalisis.tipo || TipoToken.NUMBER == preanalisis.tipo ||
+            TipoToken.STRING == preanalisis.tipo || TipoToken.IDENTIFIER == preanalisis.tipo ||
+            TipoToken.LEFT_PAREN == preanalisis.tipo) {
+            expression();
+            ARGUMENTS();
+        }
+    }
+
+    // ARGUMENTS -> , EXPRESSION ARGUMENTS | Ɛ
+    private void ARGUMENTS() {
+        if (hayErrores)
+            return;
+
+        while (TipoToken.COMMA  == preanalisis.tipo) {
+            match(TipoToken.COMMA);
+            if (TipoToken.BANG == preanalisis.tipo || TipoToken.MINUS == preanalisis.tipo ||
+                TipoToken.TRUE == preanalisis.tipo || TipoToken.FALSE == preanalisis.tipo ||
+                TipoToken.NULL == preanalisis.tipo || TipoToken.NUMBER == preanalisis.tipo ||
+                TipoToken.STRING == preanalisis.tipo || TipoToken.IDENTIFIER == preanalisis.tipo ||
+                TipoToken.LEFT_PAREN == preanalisis.tipo) {
+                expression();
+                ARGUMENTS();
+            }
+        }
+    }
 
     //Comparar tipo de token
     private void match(TipoToken tt){
