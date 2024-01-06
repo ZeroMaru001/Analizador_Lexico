@@ -580,7 +580,8 @@ public class ASDR implements Parser {
 
     // FUNCTION -> id ( PARAMETERS_OPC ) BLOCK
     private void FUNCTION() {
-        if (hayErrores) return;
+        if (hayErrores)
+            return;
 
         // FUNCTION -> id ( PARAMETERS_OPC ) BLOCK
         if (TipoToken.IDENTIFIER == preanalisis.tipo) {
@@ -600,7 +601,7 @@ public class ASDR implements Parser {
         if (hayErrores)
             return;
 
-        if (TipoToken.FUN == preanalisis.tipo) {
+        while (TipoToken.FUN == preanalisis.tipo) {
             FUN_DECL();
             FUNCTIONS();
         }
@@ -647,11 +648,15 @@ public class ASDR implements Parser {
         if (hayErrores)
             return;
 
-        if (TipoToken.BANG == preanalisis.tipo || TipoToken.MINUS == preanalisis.tipo ||
-            TipoToken.TRUE == preanalisis.tipo || TipoToken.FALSE == preanalisis.tipo ||
-            TipoToken.NULL == preanalisis.tipo || TipoToken.NUMBER == preanalisis.tipo ||
-            TipoToken.STRING == preanalisis.tipo || TipoToken.IDENTIFIER == preanalisis.tipo ||
-            TipoToken.LEFT_PAREN == preanalisis.tipo) {
+        if (TipoToken.BANG == preanalisis.tipo ||
+            TipoToken.MINUS == preanalisis.tipo ||
+            TipoToken.TRUE == preanalisis.tipo ||
+            TipoToken.FALSE == preanalisis.tipo ||
+            TipoToken.NULL == preanalisis.tipo ||
+            TipoToken.NUMBER == preanalisis.tipo ||
+            TipoToken.STRING == preanalisis.tipo ||
+            TipoToken.IDENTIFIER == preanalisis.tipo ||
+            TipoToken.LEFT_PAREN == preanalisis.tipo){
             expression();
             ARGUMENTS();
         }
@@ -662,16 +667,10 @@ public class ASDR implements Parser {
         if (hayErrores)
             return;
 
-        while (TipoToken.COMMA  == preanalisis.tipo) {
+        while (preanalisis.tipo == TipoToken.COMMA) {
             match(TipoToken.COMMA);
-            if (TipoToken.BANG == preanalisis.tipo || TipoToken.MINUS == preanalisis.tipo ||
-                TipoToken.TRUE == preanalisis.tipo || TipoToken.FALSE == preanalisis.tipo ||
-                TipoToken.NULL == preanalisis.tipo || TipoToken.NUMBER == preanalisis.tipo ||
-                TipoToken.STRING == preanalisis.tipo || TipoToken.IDENTIFIER == preanalisis.tipo ||
-                TipoToken.LEFT_PAREN == preanalisis.tipo) {
-                expression();
-                ARGUMENTS();
-            }
+            expression();
+            ARGUMENTS();
         }
     }
 
