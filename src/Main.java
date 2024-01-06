@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.util.List;
 import java.io.InputStreamReader;
 
-
-
 public class Main {
     //variable global tipo boolean que indica los errores
     static boolean existenErrores = false;
