@@ -42,6 +42,7 @@ public class ASDR implements Parser {
 
         if(TipoToken.FUN == preanalisis.tipo){
             // -> FUN_DECL DECLARATION
+
             FUN_DECL();
             DECLARATION();
         } else if (TipoToken.VAR == preanalisis.tipo) {
@@ -624,6 +625,8 @@ public class ASDR implements Parser {
     //        -> id
     //        -> ( EXPRESSION )
     private void PRIMARY() {
+        if (hayErrores)
+            return;
         switch (this.preanalisis.getTipo()) {
             case TRUE:
                 match(TipoToken.TRUE);
@@ -761,6 +764,9 @@ public class ASDR implements Parser {
 
     //Comparar tipo de token
     private void match(TipoToken tt){
+        if (hayErrores)
+            return;
+
         if(preanalisis.tipo == tt){
             i++;
             preanalisis = tokens.get(i);

@@ -75,10 +75,10 @@ public class Main {
         try{
             Scanner scanner = new Scanner(codigo);
             List<Token> tokens = scanner.scan();
-
+            /*
             for(Token token : tokens){
                 System.out.println(token.toString());
-            }
+            }*/
 
             Parser parser = new ASDR(tokens);
             parser.parse();
