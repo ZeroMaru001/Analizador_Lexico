@@ -10,5 +10,8 @@ public class ExprBinary extends Expression{
         this.operator = operator;
         this.right = right;
     }
-
+    @Override
+    public String toString(){
+        return "(" + left + " " + operator.lexema + " " + right + ")";
+    }
 }

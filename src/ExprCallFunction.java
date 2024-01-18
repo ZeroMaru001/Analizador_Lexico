@@ -12,4 +12,20 @@ public class ExprCallFunction extends Expression{
         // this.paren = paren;
         this.arguments = arguments;
     }
+    @Override
+    public String toString() {
+        String funciones = "";
+        if (arguments != null) {
+            for (int i = 0; i < arguments.size(); i++) {
+                if (arguments.get(i) != null)
+                    funciones += arguments.get(i).toString();
+                else {
+                    funciones += "null";
+                }
+                if (i < arguments.size() - 1)
+                    funciones += ", ";
+            }
+        }
+        return funciones;
+    }
 }

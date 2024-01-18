@@ -6,4 +6,9 @@ class ExprLiteral extends Expression {
     ExprLiteral(Object value) {
         this.value = value;
     }
+
+    @Override
+    public String toString(){
+        return value.toString();
+    }
 }

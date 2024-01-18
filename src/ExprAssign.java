@@ -7,4 +7,8 @@ public class ExprAssign extends Expression{
         this.name = name;
         this.value = value;
     }
+    @Override
+    public String toString(){
+        return name.lexema+" = " + value;
+    }
 }

@@ -6,4 +6,9 @@ public class ExprGrouping extends Expression {
     ExprGrouping(Expression expression) {
         this.expression = expression;
     }
+
+    @Override
+    public String toString(){
+        return "{" + expression + "}";
+    }
 }

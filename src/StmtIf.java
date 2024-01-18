@@ -9,4 +9,12 @@ public class StmtIf extends Statement {
         this.thenBranch = thenBranch;
         this.elseBranch = elseBranch;
     }
+
+    @Override
+    public String toString(){
+        String stmtIf = "if " + condition + " then\n" + thenBranch;
+        if(elseBranch != null)
+            stmtIf += "\nelse\n" + elseBranch;
+        return stmtIf;
+    }
 }

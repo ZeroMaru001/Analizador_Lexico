@@ -6,4 +6,9 @@ public class StmtPrint extends Statement {
     StmtPrint(Expression expression) {
         this.expression = expression;
     }
+
+    @Override
+    public String toString(){
+        return "print " + expression;
+    }
 }
